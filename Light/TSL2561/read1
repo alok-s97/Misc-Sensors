@@ -25,3 +25,7 @@ WriteWord (Address, Command, T_Upper.LoByte, T_Upper.HiByte)
 Command - 0x86                                          // Address interrupt register
 Data = 0x23                                             // SMBAlert style, PERSIST = 3
 WriteByte (Address, Command, Data)
+
+
+
+
