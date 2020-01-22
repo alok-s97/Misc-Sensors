@@ -1,0 +1,27 @@
+// Code for interfacing TSL256x series LUX sensor for measuring light intensity
+// This is pseudo code 
+
+/* Configuration of an SMB alert style interrupt when light intensity changes 20% from the current value, 
+ * and lasts for 3 conversion cycles
+ */
+Address = 0x39                                          // Slave addr also 0x29 / 0x49
+Command = 0xAC                                          // Setting command bit & word bit
+ReadWord (Address, Command, DataLow, DataHigh)
+Channel0 = (256 * DataHigh) + DataLow
+
+// Calculate upper & lower thresholds
+T_upper = Channel0 + (0.2 * Channel0)
+T_lower = Channel0 - (0.2 * Channel0)
+
+// Write the lower threshold register
+Command = 0xA2                                          // Addr lower threshold reg, set Word bit
+WriteWord (Address, Command, T_Lower.LoByte, T_Lower.HiByte)
+
+// Write the upper threshold register
+Command = 0xA4                                          // Addr upper threshold reg, set Word bit
+WriteWord (Address, Command, T_Upper.LoByte, T_Upper.HiByte)
+
+// Enable interrupt
+Command - 0x86                                          // Address interrupt register
+Data = 0x23                                             // SMBAlert style, PERSIST = 3
+WriteByte (Address, Command, Data)
